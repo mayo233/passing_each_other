@@ -18,7 +18,6 @@ boolean space ; //空きスペースに入るのか判定する変数
 boolean stop; //停止させるか判定する変数
 boolean temp =false;
 boolean once =false;
-int block_delete;
 int stop_time; //停止時間
 int count_collision;  //空きスペースに入って衝突回避を行った回数
 
@@ -44,6 +43,8 @@ void blockHitCheck() {
 
   if (agent2[1] !=100) {
     before =agent2[0]/12;
+  } else if (agent1[1] !=100) {
+    before =agent1[0]/12;
   }
 
   if (before !=0 ) {
@@ -69,9 +70,9 @@ int agent_or_space () {
 }
 
 void agent_move() {
-  if (stop_time  >=250) {
-    agent1[0] +=1;
-  }
+  //if (stop_time  >=250) {
+  //  agent1[0] +=1;
+  //}
 
 
   //agent1[0] +=1;
@@ -85,43 +86,91 @@ void agent_move() {
     if (once ==false) {
       agent_num = agent_or_space();
       once =true;
-      //println(agent_num);
     }
-    //println(agent_num);
+
     if (count_collision ==0) {
       collision =true;
     }
   }
 
+  //衝突しそうにない時
   if (collision ==false) {
-    agent2[0] -=1;
+    agent1[0] +=1;  //エージェント１は左からくる
+    agent2[0] -=1; //エージェント２は右からくる
   } else if (collision ==true) {
-    if (space ==false ) {
+    if (space ==false) {
+      //衝突しそうになっていて空きスペースに入っていない時
       if (agent_num ==1) {
         agent1[1] -=1;
+        agent2[0] -=1;
       } else {
+        agent1[0] +=1;
         agent2[1] -=1;
       }
-      if (agent2[1] ==85 || agent1[1] ==85 ) {
+      if (agent1[1] ==85 || agent2[1] ==85) {
         space =true;
+        if (agent_num ==1) {
+          agent1[1] -=1;
+          agent2[0] -=1;
+        } else {
+          agent1[0] +=1;
+          agent2[1] -=1;
+        }
       }
     } else if (space ==true) {
+      //ブロックを壊した時
       if (agent_num ==1) {
         agent1[1] +=1;
-       
+        agent2[0] -=1;
       } else {
+        agent1[0] +=1;
         agent2[1] +=1;
       }
-      if (agent2[1] ==100) {
+      if (agent1[1] ==100 && agent2[1] ==100) {
         collision =false;
         space =false;
         count_collision++;
       }
     }
   }
-  stop_time +=1;
 }
 
+//  if (collision ==false) {
+//    agent1[0] +=1;
+//    agent2[0] -=1;
+//  } else if (collision ==true) {
+//    if (space ==false ) {
+//      if (agent_num ==1) {
+//        agent1[1] -=1;
+//        agent2[0] -=1;
+//      } else {
+//        agent1[0] +=1;
+//        agent2[1] -=1;
+//      }
+//    }
+//  //エージェントが空きスペースに入った時
+//  if (agent2[1] ==85 || agent1[1] ==85 ) {
+//    space =true;
+//    //if (agent_num ==1) {
+//    //  agent2[0] -=1;
+//    //} else {
+//    //  agent1[0] +=1;
+//    //}
+//  } else if (space ==true) {
+//    //if (agent_num ==1) {
+//    //  agent1[1] -=1;
+//    //} else {
+//    //  agent2[1] -=1;
+//    //}
+//    if (agent1[1] ==100 && agent2[1] ==100) {
+//      collision =false;
+//      space =false;
+//      count_collision++;
+//    }
+//  }
+//  stop_time +=1;
+//  }
+//}
 void setup() {
   //初期設定
   size(500, 500);
@@ -141,6 +190,5 @@ void setup() {
 void draw() {
   background(0); //背景を黒にする
   blockDisp();    //ブロックの表示
-
   agent_move();  //エージェントを動かす
 }

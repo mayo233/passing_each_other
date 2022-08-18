@@ -81,7 +81,7 @@ void agent_move() {
   ellipse(agent2[0], agent2[1], agent_x, agent_y);  //エージェント2
 
   //もしエージェント１と2が衝突しそうになったらエージェント2が空きスペースに入る
-  if (agent2[0] - agent1[0] <20  ) {
+  if (agent2[0] - agent1[0] <15  ) {
 
     if (once ==false) {
       agent_num = agent_or_space();
@@ -99,6 +99,7 @@ void agent_move() {
     agent2[0] -=1; //エージェント２は右からくる
   } else if (collision ==true) {
     if (space ==false) {
+      //衝突しそうになっていて空きスペースに入っていない時
       if (agent_num ==1) {
         agent1[1] -=1;
         agent2[0] -=1;
@@ -108,11 +109,21 @@ void agent_move() {
       }
       if (agent1[1] ==85 || agent2[1] ==85) {
         space =true;
+        if (agent_num ==1) {
+          agent1[1] -=1;
+          agent2[0] -=1;
+        } else {
+          agent1[0] +=1;
+          agent2[1] -=1;
+        }
       }
     } else if (space ==true) {
+      //ブロックを壊した時
       if (agent_num ==1) {
         agent1[1] +=1;
+        agent2[0] -=1;
       } else {
+        agent1[0] +=1;
         agent2[1] +=1;
       }
       if (agent1[1] ==100 && agent2[1] ==100) {

@@ -32,9 +32,9 @@ void blockDisp() {
       fill(255, 255, 255);
       blockHitCheck();
 
-      rect((i%50) *(blw+2), 80, blw, blh, 2);    //上のブロック
+      rect((i%50) *(blw+2), 80, blw, blh);    //上のブロック
     }
-    rect((i%50) *(blw+2), 110, blw, blh, 2);    //下のブロック
+    rect((i%50) *(blw+2), 110, blw, blh);    //下のブロック
   }
 }
 
@@ -63,25 +63,32 @@ int agent_or_space () {
   //println("---------");
   //println(agent1[0]);
   if (((agent1[0]) -((agent1[0]/12) *12) + blw/2) < ((agent2[0] ) - ((agent2[0]/12) *12) + blw/2 )) {
+
     return 1;
   } else {
+    println((agent1[0]) -((agent1[0]/12) *12) + blw/2);
+    println(agent1[0]);
+    println("---------");
+    println((agent2[0]) -((agent2[0]/12) *12) + blw/2);
+    println(agent2[0]);
+    delay(4000);
     return 2;
   }
 }
 
 void agent_move() {
-  //if (stop_time  >=250) {
-  //  agent1[0] +=1;
-  //}
+  //160 衝突 バックを入れる？？  123 うまくいった  128　微妙? 
+  if (stop_time  >=160 && collision ==false) {
+    agent2[0] -=1;
+    //stop_time=0;
+  }
 
-
-  //agent1[0] +=1;
   ellipse(agent1[0], agent1[1], agent_x, agent_y);  //エージェント1
 
   ellipse(agent2[0], agent2[1], agent_x, agent_y);  //エージェント2
 
-  //もしエージェント１と2が衝突しそうになったらエージェント2が空きスペースに入る
-  if (agent2[0] - agent1[0] <15  ) {
+  //エージェント１と2が衝突しそうになった時
+  if (agent2[0] - agent1[0] <13  ) {
 
     if (once ==false) {
       agent_num = agent_or_space();
@@ -94,9 +101,9 @@ void agent_move() {
   }
 
   //衝突しそうにない時
-  if (collision ==false) {
+  if (collision ==false ) {
     agent1[0] +=1;  //エージェント１は左からくる
-    agent2[0] -=1; //エージェント２は右からくる
+    //agent2[0] -=1; //エージェント２は右からくる
   } else if (collision ==true) {
     if (space ==false) {
       //衝突しそうになっていて空きスペースに入っていない時
@@ -133,44 +140,9 @@ void agent_move() {
       }
     }
   }
+  stop_time+=1;
 }
 
-//  if (collision ==false) {
-//    agent1[0] +=1;
-//    agent2[0] -=1;
-//  } else if (collision ==true) {
-//    if (space ==false ) {
-//      if (agent_num ==1) {
-//        agent1[1] -=1;
-//        agent2[0] -=1;
-//      } else {
-//        agent1[0] +=1;
-//        agent2[1] -=1;
-//      }
-//    }
-//  //エージェントが空きスペースに入った時
-//  if (agent2[1] ==85 || agent1[1] ==85 ) {
-//    space =true;
-//    //if (agent_num ==1) {
-//    //  agent2[0] -=1;
-//    //} else {
-//    //  agent1[0] +=1;
-//    //}
-//  } else if (space ==true) {
-//    //if (agent_num ==1) {
-//    //  agent1[1] -=1;
-//    //} else {
-//    //  agent2[1] -=1;
-//    //}
-//    if (agent1[1] ==100 && agent2[1] ==100) {
-//      collision =false;
-//      space =false;
-//      count_collision++;
-//    }
-//  }
-//  stop_time +=1;
-//  }
-//}
 void setup() {
   //初期設定
   size(500, 500);

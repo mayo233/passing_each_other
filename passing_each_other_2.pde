@@ -15,7 +15,7 @@ int agent_num=0;
 int count_collision_time =0;  //エージェント同士
 boolean collision ; //衝突しそうになったか判定する変数
 boolean space ; //空きスペースに入るのか判定する変数
-boolean stop; //停止させるか判定する変数
+boolean goal; //ゴールに着いたらエージェントを停止させる変数
 boolean temp =false;
 boolean once =false;
 int stop_time; //停止時間
@@ -77,14 +77,14 @@ int agent_or_space () {
 }
 
 void agent_move() {
-  //160 衝突 バックを入れる？？  123 うまくいった  128　微妙? 
-  if (stop_time  >=160 && collision ==false) {
-    agent2[0] -=1;
-    //stop_time=0;
+  //160 衝突 バックを入れる？？  123 うまくいった  128　微妙?
+  if (stop_time  >=123 && collision ==false) {
+    if (agent2[0] !=20) {
+      agent2[0] -=1;
+    }
   }
 
   ellipse(agent1[0], agent1[1], agent_x, agent_y);  //エージェント1
-
   ellipse(agent2[0], agent2[1], agent_x, agent_y);  //エージェント2
 
   //エージェント１と2が衝突しそうになった時
@@ -102,7 +102,10 @@ void agent_move() {
 
   //衝突しそうにない時
   if (collision ==false ) {
-    agent1[0] +=1;  //エージェント１は左からくる
+    if (agent1[0] !=490) {
+      agent1[0] +=1;  //エージェント１は左からくる
+    }
+
     //agent2[0] -=1; //エージェント２は右からくる
   } else if (collision ==true) {
     if (space ==false) {
@@ -156,7 +159,7 @@ void setup() {
   before=0;
   collision =false; //衝突していない
   space =false; //空きスペースに入っていない
-  stop =false;
+  goal =false;
 }
 
 void draw() {

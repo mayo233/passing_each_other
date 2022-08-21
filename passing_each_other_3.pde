@@ -45,12 +45,10 @@ void blockDisp() {
 //ブロックとエージェントの当たり判定
 void blockHitCheck() {
 
-  if (agent[1][1] !=100) {
-    before =agent[1][0]/12;
-  } else if (agent[0][1] !=100) {
+  if ((agent[0][1] !=100)) {
     before =agent[0][0]/12;
   }
-
+  
   if (before !=0 ) {
     blf[before] =0;
   }
@@ -59,14 +57,10 @@ void blockHitCheck() {
 //衝突したエージェントのどっちが空きスペースに入るか判定する関数
 int agent_or_space () {
   if (((agent[0][0]) -((agent[0][0]/12) *12) + blw/2) < ((agent[1][0] ) - ((agent[1][0]/12) *12) + blw/2 )) {
+    return 0;
+  } else if (((agent[0][0]) -((agent[2][0]/12) *12) + blw/2) < ((agent[0][0] ) - ((agent[2][0]/12) *12) + blw/2 )) {
     return 1;
-  } else {
-    //println((agent[0][0]) -((agent[0][0]/12) *12) + blw/2);
-    //println(agent[0][0]);
-    //println("---------");
-    //println((agent[1][0]) -((agent[1][0]/12) *12) + blw/2);
-    //println(agent[1][0]);
-    //delay(4000);
+  } else{
     return 2;
   }
 }
@@ -81,33 +75,37 @@ void agent_move() {
   //}
 
   for (int i=0; i<N; i++) {
+
+    //エージェント番号を可視化
+    textSize(40);
+    if (i==0) {
+      text( "1", agent[i][0], agent[i][1] +20, 60, 600);
+    } else if (i==1) {
+      text( "2", agent[i][0], agent[i][1] +20, 60, 600);
+    } else {
+      text( "3", agent[i][0], agent[i][1] +20, 60, 600);
+    }
+
     ellipse(agent[i][0], agent[i][1], agent_x, agent_y);  //エージェントを表示させる
     for (int j =0; j<N; j++) {
       if (i ==j) {
         continue;
       }
-      println(agent[2][0]);
-      println(agent[2][0]);
-      
-      println(agent[0][0]);
-      println("aaaaaa");
-
 
       //エージェント同士が衝突しそうになった時
-      if ((agent[0][0] - agent[1][0] <30 )  && (agent[0][0] - agent[1][0] >=-30 ) ||  (agent[0][0] - agent[2][0] <30 )  && (agent[0][0] - agent[2][0] >=-30 ) 
-      || (agent[1][0] - agent[0][0] <30 )  && (agent[1][0] - agent[0][0] >=-30 ) || (agent[1][0] - agent[2][0] <30 )  && (agent[1][0] - agent[2][0] >=-30 ) || (agent[2][0] - agent[0][0] <30 )  && (agent[2][0] - agent[0][0] >=-30 )
-      || (agent[2][0] - agent[1][0] <30 )  && (agent[2][0] - agent[1][0] >=-30 )) {
+      if ((agent[0][0] - agent[1][0] <=5 )  && (agent[0][0] - agent[1][0] >=-5 ) ||  (agent[0][0] - agent[2][0] <15 )  && (agent[0][0] - agent[2][0] >=-15 )
+        || (agent[1][0] - agent[0][0] <5 )  && (agent[1][0] - agent[0][0] >=-5 ) || (agent[1][0] - agent[2][0] <15 )  && (agent[1][0] - agent[2][0] >=-15 ) || (agent[2][0] - agent[0][0] <15 )  && (agent[2][0] - agent[0][0] >=-15 )
+        || (agent[2][0] - agent[1][0] <15 )  && (agent[2][0] - agent[1][0] >=-15 ) || (agent[i][0] - agent[j][0] <30 )  && (agent[i][0] - agent[j][0] >=-30 )) {
         println("衝突する");
-        println();
-
-
-
+        println(agent[0][0] - agent[2][0]);
+        //println(i);
+        //println(j);
+        //println(agent[0][0] - agent[2][0] );
 
         if (once ==false) {
           agent_num = agent_or_space();
           once =true;
         }
-
         if (count_collision ==0) {
           collision =true;
         }
@@ -127,36 +125,58 @@ void agent_move() {
   } else if (collision ==true) {
     if (space ==false) {
       //衝突しそうになっていて空きスペースに入っていない時
-      if (agent_num ==1) {
+      println("sぷえ");
+      //println(agent[0][0]);
+
+      if (agent_num ==0) {
+        
         agent[0][1] -=1;
         agent[1][0] -=1;
-        
-      } else {
+        agent[2][0] -=1;
+      } else if (agent_num ==1) {
         agent[0][0] +=1;
         agent[1][1] -=1;
+        agent[2][1] -=1;
+        //noLoop();
+      } else {
+        println(agent_num);
+        agent[0][0] +=1;
+        agent[1][0] -=1;
+        agent[2][1] -=1;
       }
-      if (agent[0][1] ==85 || agent[1][1] ==85) {
+      if (agent[0][1] ==85 || agent[1][1] ==85  || agent[2][1] ==85) {
         space =true;
-        if (agent_num ==1) {
-          agent[0][1] -=1;
-          agent[1][0] -=1;
-        } else {
+        if (agent_num ==0) {
           agent[0][0] +=1;
           agent[1][1] -=1;
+          agent[2][1] -=1;
+        } else if(agent_num ==1){
+          agent[0][1] +=1;
+          agent[1][0] +=1;
+          agent[2][0] -=1;
         }
       }
     } else if (space ==true) {
       //ブロックを壊した時
-      if (agent_num ==1) {
+      if (agent_num ==0) {
         agent[0][1] +=1;
+        
         agent[1][0] -=1;
-      } else {
+        agent[2][0] -=1;
+      } else if (agent_num ==1) {
         agent[0][0] +=1;
         agent[1][1] +=1;
+        agent[2][0] +=1;
+      } else {
+        agent[0][0] +=1;
+        agent[1][0] -=1;
+        agent[2][1] -=1;
       }
-      if (agent[0][1] ==100 && agent[1][1] ==100) {
+      if (agent[0][1] ==100 || agent[1][1] ==100 || agent[2][1] ==100) {
+        println("aaaa");
         collision =false;
         space =false;
+        println("出たよ");
         count_collision++;
       }
     }

@@ -31,6 +31,7 @@ boolean temp =false;
 boolean once =false;
 boolean second =false;
 
+int block_count=0;
 int stop_time; //停止時間
 int count_collision;  //空きスペースに入って衝突回避を行った回数
 
@@ -54,16 +55,21 @@ void blockDisp() {
 //ブロックとエージェントの当たり判定 ブロックを消す
 void blockHitCheck() {
 
-  if ((agent[0][1] !=100) ) {
+  if ((agent[0][1] !=100) && count_collision ==0) {
     before =agent[0][0]/12;
   } else if (agent[2][1] ==90 ) {
     before_2 =agent[2][0]/12;
-  } else if ((agent[0][1] !=100) ) {
+  } else if ((agent[0][1] !=100 && (count_collision ==1 || count_collision ==2)) ) {
     before_1 =agent[0][0]/12;
+    println(before_1);
   }
 
-  if (before !=0 ) {
-    blf[before] =0;
+  if (before !=0  || before_1!=0) {
+    blf[before]=0;
+  }
+
+  if (before_1 !=0  ) {
+    blf[before_1] =0;
   }
 
 
@@ -231,7 +237,7 @@ void agent_move() {
           stop_2=true;
         }
 
-        if ((millis()/1000- space_enter_t )==1 && count_collision ==1) {
+        if ((millis()/1000- space_enter_t )==2 && count_collision ==1) {
 
           agent[2][1] +=1;
         }

@@ -222,7 +222,6 @@ void agent_move() {
           agent[0][1] +=1;
         }
 
-
         agent[1][0] -=1;
         agent[2][0] -=1;
       } else if (agent_num ==1) {
@@ -233,11 +232,10 @@ void agent_move() {
         if (stop_2 ==false) {
           println("現在時間");
           space_enter_t =millis()/1000;
-
           stop_2=true;
         }
 
-        if ((millis()/1000- space_enter_t )==2 && count_collision ==1) {
+        if ((millis()/1000- space_enter_t )==4 && count_collision ==1) {
 
           agent[2][1] +=1;
         }
@@ -257,7 +255,7 @@ void agent_move() {
         } else {
           println("終わったの？");
           collision =false;
-          println(agent[0][0]);
+
 
           //agent[0][0] +=1;
         }

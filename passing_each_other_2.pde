@@ -6,6 +6,7 @@ int agent_y =10;   //agentのy座標の大きさ
 int agent_num=0;  //空きスペースに入るエージェント番号
 int stop_time; //エージェントの停止時間
 int count_collision;  //衝突回数
+int space_enter_t=0;    //ブロックを壊し始める時間
 
 //ブロックの変数宣言
 int[] blf =new int[50] ; //ブロックの数
@@ -17,6 +18,7 @@ int break_block=0;  //破壊するブロック
 boolean collision ; //エージェント同士が衝突しそうになったか判定する変数
 boolean space ; //空きスペースに入るのか判定する変数
 boolean once =false;    //どっちのエージェントが空きスペースに入るか判定する
+boolean stop =false;  //エージェントを停止させるか判定する
 
 
 void blockDisp() {
@@ -54,7 +56,7 @@ int agent_or_space () {
 
   if (((agent1[0]) -((agent1[0]/12) *12) + blw/2) < ((agent2[0] ) - ((agent2[0]/12) *12) + blw/2 )) {
 
-    return 1;
+    return 0;
   } else {
     println((agent1[0]) -((agent1[0]/12) *12) + blw/2);
     println(agent1[0]);
@@ -62,7 +64,7 @@ int agent_or_space () {
     println((agent2[0]) -((agent2[0]/12) *12) + blw/2);
     println(agent2[0]);
     //delay(4000);
-    return 2;
+    return 1;
   }
 }
 
@@ -72,9 +74,9 @@ void agent_move() {
   textSize(40);
   text("1", agent1[0], agent1[1]+20, 60, 600);  //エージェント1
   text("2", agent2[0], agent2[1]+20, 60, 600);  //エージェント2
-  
+
   //160 衝突 バックを入れる？？  123 うまくいった  128　微妙?
-  if (stop_time  >=160 && collision ==false) {
+  if (stop_time  >=90 && collision ==false) {
     if (agent2[0] !=20) {
       agent2[0] -=1;
     }
@@ -101,23 +103,26 @@ void agent_move() {
     if (agent1[0] !=490) {
       agent1[0] +=1;  //エージェント１は左からくる
     }
-
-    //agent2[0] -=1; //エージェント２は右からくる
   } else if (collision ==true) {
     if (space ==false) {
-      
+
+
       //衝突しそうになっていて空きスペースに入っていない時
-      if (agent_num ==1) {
+      if (agent_num ==0) {
         agent1[1] -=1;
         agent2[0] -=1;
       } else {
-        agent1[0] +=1;
         agent2[1] -=1;
+        agent1[0] +=1;
       }
       if (agent1[1] ==85 || agent2[1] ==85) {
         space =true;
-        if (agent_num ==1) {
+
+        if (agent_num ==0) {
+
           agent1[1] -=1;
+
+          //agent1[1] -=1;
           agent2[0] -=1;
         } else {
           agent1[0] +=1;
@@ -125,14 +130,22 @@ void agent_move() {
         }
       }
     } else if (space ==true) {
-      
+      if (stop ==false) {
+        space_enter_t =millis()/1000;
+        stop=true;
+      }
+
       //ブロックを壊した時
-      if (agent_num ==1) {
-        agent1[1] +=1;
+      if (agent_num ==0) {
+        if ((millis()/1000- space_enter_t)==1) {
+          agent1[1] +=1;
+        }
         agent2[0] -=1;
       } else {
+        if ((millis()/1000- space_enter_t)==1) {
+          agent2[1] +=1;
+        }
         agent1[0] +=1;
-        agent2[1] +=1;
       }
       if (agent1[1] ==100 && agent2[1] ==100) {
         collision =false;
@@ -155,7 +168,6 @@ void setup() {
   stop_time=0;
   collision =false; //衝突していない
   space =false; //空きスペースに入っていない
-
 }
 
 void draw() {

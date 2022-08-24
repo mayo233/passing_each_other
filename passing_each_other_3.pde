@@ -64,7 +64,7 @@ void blockHitCheck() {
     println(before_1);
   }
 
-  if (before !=0  || before_1!=0) {
+  if (before !=0 ) {
     blf[before]=0;
   }
 
@@ -255,8 +255,7 @@ void agent_move() {
         } else {
           println("終わったの？");
           collision =false;
-
-
+          
           //agent[0][0] +=1;
         }
       }

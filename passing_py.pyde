@@ -1,6 +1,9 @@
-# -*- coding: utf-8 -*-
-import variable 
+import  sys
 import Node
+import MAP
+import robot1
+import avoid
+import variable
 
 #変数宣言
 brock=[
@@ -53,24 +56,181 @@ brock=[
   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-global agent1, agent2
+global agent1, agent2,stop_time
 global count,play_count_1,play_count_2,count_2
-global agent
+global agent,path_1,path_2
 global goal
+global stop,delete
 
 x_1 = []
 y_1 = []
 x_2 = []
 y_2 = []
-
+path_1=[]
+path_2=[]
 agent =[]
 
 goal =False
+goal_2 =False
+stop =False
+delete =False
 agent1 = 490
 count=0
 count_2=0
 play_count_1=0
 play_count_2=0
+stop_time =0
+
+def path_search1():
+    #path_search2()
+    #エージェント１の経路探索
+    global play_count_1  #関数の実行回数
+    
+    if play_count_1 ==0:
+        start = (8,0)  # スタート地点  49,0
+        end = (8, 49)  # タスク地点 (goal)  8,7
+        path = Node.astar(brock, start, end)  # A_starで探索された経路
+        
+        # start_2 = (0,49)  # スタート地点  
+        # end_2 = (8, 30)  # タスク地点 (goal)
+        # path_2 = Node.astar(brock, start_2, end_2)  # A_starで探索された経路
+        #print(path)
+        play_count_1 +=1
+        
+    # elif play_count_1 ==1:
+    #     start = (8, 7)  # スタート地点  8,7
+    #     end = (49, 0)  # タスク地点 (goal) 49,0
+    #     path = Node.astar(brock, start, end)  # A_starで探索された経路
+    #     #print(path)
+
+    #探索された経路のx,yを各配列に格納
+    for i in range(len(path)):
+        x_1.append(path[i][1])
+        y_1.append(path[i][0])
+
+def path_search2():
+    
+    #エージェント2の経路探索
+    global play_count_2,path_2,path_1  #関数の実行回数
+    #println(play_count_2)
+    
+    if play_count_2 ==0:
+        start = (8,49)  #  スタート地点 0,49
+        end = (8,0)  # タスク地点 (goal)  8,31
+        path = Node.astar(brock, start, end)  # A_starで探索された経路
+        print(path)
+        #println(path)
+        play_count_2 +=1
+        
+    # elif play_count_2 ==1:
+    #     start = (8, 31)  #  スタート地点
+    #     end = (49,0)  # タスク地点 (goal)
+    #     path = Node.astar(brock, start, end)  # A_starで探索された経路
+    #     println(path_2)
+
+    # #探索された経路のx,yを各配列に格納
+    for i in range(len(path)):
+        x_2.append(path[i][1])
+        y_2.append(path[i][0])        
+        
+    # for i in range(len(path)):
+    #     x_2.append(path_2[i][1])
+    #     y_2.append(path_2[i][0])        
+
+#探索された経路を可視化する関数
+def path_visual():
+    global count
+    for i in range(len(x)):
+            fill(0,0,200)
+            rect(x[i]*10, y[i]*10, 10, 10)  #探索された経路の升目に色を塗る
+
+def agent_move1():
+    global count,goal
+    #print(goal)
+    fill(0)
+    text("1", x_1[count]*10+2.5, y_1[count]*10+4+20, 60, 600)
+    if count <=len(x_1) -1 and goal ==False:
+        fill(155,100,100)
+        ellipse(x_1[count]*10+2.5, y_1[count]*10+4, 7, 7)  #エージェント１ 
+                
+        # print("robot1")
+        # print(x_1[count]*10+2.5)
+        
+        if count >=len(x_1) -1:
+            goal =True
+        
+    if goal ==True:
+        fill(155,100,100)
+        ellipse(x_1[-1]*10+2.5, y_1[-1]*10+4, 7, 7)  #エージェント１ 
+    # println("-----")
+    # println(count)
+    count+=1
+
+def agent_move2():
+    global count_2,goal_2,stop_time
+    #print(len(x_2))
+    fill(0)
+    text("2", x_2[count_2]*10+2.5, y_2[count_2]*10+4+20, 60, 600)
+    if count_2 <=len(x_2)-1 and goal_2 ==False:
+        fill(155,100,100)
+        
+        # print("robot2")
+        # print(x_2[count_2]*10+2.5)
+        
+        avoid.avoid_robot(x_1[count]*10+2.5,x_2[count_2]*10+2.5,y_1[count]*10+4,y_2[count_2]*10+4)
+        #println(x_1[count]*10+2.5)
+        # if count ==5 and stop==False:
+        #     stop_time =millis()/1000
+        #     stop=True
+            
+        # if ((millis()/1000 - stop_time)==1):
+        #     print(millis()/1000 - stop_time)
+        #     count_2 -=1
+        #     ellipse(x_2[count_2]*10+2.5, y_2[count_2]*10+4, 7, 7)           
+            
+        if count_2 >=len(x_2)-1:
+            goal_2 =True
+
+    if goal_2 ==True:
+
+        fill(155,100,100)
+        ellipse(x_2[-1]*10+2.5, y_2[-1]*10+4, 7, 7)  #エージェント2
+    
+    if variable.stop ==False:
+        ellipse(x_2[count_2]*10+2.5, y_2[count_2]*10+4, 7, 7) 
+        print(count_2)
+        print("------")
+        count_2+=1
+        print(x_2[count_2]*10+2.5)
+    else:
+        # print("xxxx")
+        # println(x_2[count_2]*10+2.5)
+        #ellipse(242.5, y_2[count_2]*10+4 -10, 7, 7) 
+        #ellipse(x_2[24]*10+2.5, y_2[24]*10+4 -10, 7, 7) 
+        print(count_2)
+
+def setup():
+    size(500, 500)
+    frameRate(2)
+
+def draw():
+    background(0)
+    textSize(40)
+    #text("2", agent1[0], agent1[1]+20, 60, 600)
+    
+    MAP.make_brock()
+    #path_search1()
+    #path_search2()
+    #path_visual()
+    agent_move1()
+    agent_move2()
+    
+if __name__ == '__main__':
+    path_search1()
+    #avoid.avoid_robot()
+    #robot1.path_search1()
+    path_search2()
+    #path_search2()

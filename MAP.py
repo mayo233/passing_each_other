@@ -8,11 +8,9 @@ def make_brock():
             
             if (i == 0 and j == 49):  # 赤色　ゴール地点とスタート地点
                 fill(250, 20, 0)
-               
                 rect(j * 10, i * 10, 10, 10)
         
-
-            elif (i == 8 and j == 7 or (i == 8 and j == 31)):  # 中間地点
+            elif ((i == 8 and j == 7) or (i == 8 and j == 31)):  # 中間地点
                 # println(j)
                 fill(055, 255, 0)
                 rect(j * 10, i * 10, 10, 10)

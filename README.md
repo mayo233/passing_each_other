@@ -25,10 +25,15 @@
 
 ・勾配探索法の導入
 
-# 実際の研究ノート
+# 実際の研究ノート (一部)
 
 
 
 *　字が汚いことはご了承ください
+
+
+![S__39854082](https://user-images.githubusercontent.com/63102510/200448837-5d89c7d0-005c-4a66-948c-7351352dd759.jpg)
+
+![S__39854084](https://user-images.githubusercontent.com/63102510/200448845-81696cde-3e29-41e4-a0c8-fc6b84db7d5a.jpg)
 
 
